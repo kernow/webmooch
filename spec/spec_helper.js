@@ -1,5 +1,3 @@
-Mock.mockerize();
-
 Screw.Unit(function() {
   after(function(){
     $(Mock.mocked_objects).each(function(i, obj){

@@ -35,6 +35,7 @@ Screw.Unit(function() {
       }); // end it
       
       it("calling the method multiple times should only reset XMLHttpRequest once", function() {
+        var mooch_mock = new Mock(Mooch);
         Mooch.spies('restore_XMLHttpRequest').once();
         Mooch.reset();
         Mooch.reset();
@@ -46,17 +47,64 @@ Screw.Unit(function() {
     describe("stub_request", function() {
       
       it("should return the Mooch object", function() {
-        expect(Mooch.stub_request()).to(equal, Mooch);
+        expect(Mooch.stub_request()).to(be_an_object);
       }); // end it
       
     }); // end describe
     
     
-    describe("returns", function() {
+    describe("a remote", function() {
       
-      it("should return the Mooch object", function() {
-        expect(Mooch.returns()).to(equal, Mooch);
-      }); // end it
+      describe("post request", function() {
+
+        var remote_data;
+        var expected_data;
+
+        before(function() {
+          expected_data = "some text";
+        }); // end before
+
+        after(function() {
+          delete remote_data;
+        }); // end before
+
+        it("should return the expected data", function(me) {
+          Mooch.stub_request('POST', '/test/data.json').returns({ 'body': "some text", 'status': 200, 'headers': {} });
+          $.post('/test/data.json', {}, function(data){
+            remote_data = data;
+          });
+          using(me).wait(1).and_then(function(){
+            expect(remote_data).to(equal, expected_data);
+          });
+        }); // end it
+        
+      }); // end describe
+      
+      
+      describe("a get request", function() {
+        
+        var remote_data;
+        var expected_data;
+
+        before(function() {
+          expected_data = "some text";
+        }); // end before
+
+        after(function() {
+          delete remote_data;
+        }); // end before
+
+        it("should return the expected data", function(me) {
+          Mooch.stub_request('GET', '/test/data.json').returns({ 'body': "some text", 'status': 200, 'headers': {} });
+          $.get('/test/data.json', {}, function(data){
+            remote_data = data;
+          });
+          using(me).wait(1).and_then(function(){
+            expect(remote_data).to(equal, expected_data);
+          });
+        }); // end it
+        
+      }); // end describe
       
     }); // end describe
     
