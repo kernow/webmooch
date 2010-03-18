@@ -106,6 +106,35 @@ Screw.Unit(function() {
         
       }); // end describe
       
+      describe("jquery adding no cache data", function() {
+        
+        var remote_data;
+        var expected_data;
+        
+        before(function() {
+          expected_data = "some text";
+        }); // end before
+
+        after(function() {
+          delete remote_data;
+        }); // end before
+        
+        it("should remove jquery style no cache parameters", function(me) {
+          Mooch.stub_request('GET', '/test/url').returns({ 'body': "some text", 'status': 200, 'headers': {} });
+          $.ajax({
+            url: '/test/url',
+            cache: false,
+            success: function(data){
+              remote_data = data;
+            }
+          });
+          using(me).wait(1).and_then(function(){
+            expect(remote_data).to(equal, expected_data);
+          });
+        }); // end it
+        
+      }); // end describe
+      
     }); // end describe
     
   }); // end describe
