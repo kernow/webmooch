@@ -22,8 +22,13 @@ Mooch.reset = function(){
 };
 
 Mooch.replace_XMLHttpRequest = function(){
-  Mooch.original = window.XMLHttpRequest;
-  window.XMLHttpRequest = Mooch.XMLHttpRequest;
+  if(window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject)){
+    Mooch.original = window.XMLHttpRequest;
+    window.XMLHttpRequest = Mooch.XMLHttpRequest;
+  }else{
+    Mooch.original = window.ActiveXObject;
+    window.ActiveXObject = Mooch.XMLHttpRequest;
+  }
 };
 
 Mooch.restore_XMLHttpRequest = function(){
@@ -55,6 +60,14 @@ Mooch.Stub.prototype = {
     if(options.body){
       this.responseText = options.body;
     }
+  },
+  set_jsonp_callback: function(callback){
+    this.jsonp_callback = callback;
+  },
+  run_jsonp_callback: function(){
+    if(this.jsonp_callback){
+      window[ this.jsonp_callback ](window["eval"]("(" + this.responseText + ")"));
+    }
   }
 };
 Mooch.StubList = function(){
@@ -76,20 +89,34 @@ Mooch.StubList.prototype = {
 	  return this.stubs[key];
 	},
 	find: function(method, uri){
-	  uri = this.remove_cache_parameters(uri)
-	  return this.stubs[this.create_key(method, uri)];
+	  uri = this.remove_cache_parameters(uri);
+	  jsonp_obj = this.store_and_remove_jsonp_parameters(uri);
+	  uri = jsonp_obj.uri;
+	  var match = this.stubs[this.create_key(method, uri)];
+	  if(match && jsonp_obj.jsonp_callback){
+	    match.stub.set_jsonp_callback(jsonp_obj.jsonp_callback);
+	  }
+	  return match;
 	},
 	create_key: function(method, uri){
 	  return method + '_' + uri;
 	},
 	remove_cache_parameters: function(uri){
 	  return uri.replace(/_=\d+/, '').replace(/\?$/, '');
+	},
+	store_and_remove_jsonp_parameters: function(uri){
+	  var jsonp_matches = uri.match(/callback=(jsonp\d+)/);
+	  var obj = { uri: uri.replace(/callback=jsonp\d+/, 'callback=?').replace(/\&$/, '') };
+	  if(jsonp_matches && jsonp_matches.length > 0){
+	    obj.jsonp_callback = jsonp_matches[1];
+    }
+	  return obj;
 	}
 };
 Mooch.XMLHttpRequest = function(){
   console.log("caught call to new");
   this.stub = null;
-}
+};
 
 Mooch.XMLHttpRequest.prototype.open = function(){
   console.log("open caught with args");
@@ -120,12 +147,15 @@ Mooch.XMLHttpRequest.prototype.send = function(){
   console.log(arguments);
 
   this.stub.invocation_count ++;
+
   this.status         = this.stub.stub.status;
   this.statusText     = this.stub.stub.statusText;
   this.responseText   = this.stub.stub.responseText;
 
   this.readyState     = 4;
   this.responseXML    = null;
+
+  this.stub.stub.run_jsonp_callback();
 
   console.log("fireing jQuery callback");
   this.onreadystatechange();
