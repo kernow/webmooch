@@ -9,7 +9,7 @@ Screw.Unit(function() {
     }); // end before
     
     after(function() {
-      delete stub_list;
+      stub_list = undefined;
     }); // end after
     
     describe("new", function() {
