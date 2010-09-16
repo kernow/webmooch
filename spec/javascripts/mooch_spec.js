@@ -23,6 +23,10 @@ describe("Mooch", function() {
       }
     }); // end it
     
+    it("should create a sub list", function() {
+      expect(Mooch.stub_list).toBeAnObject();
+    }); // end it
+    
   }); // end describe
   
   describe("reset", function() {
@@ -47,13 +51,27 @@ describe("Mooch", function() {
       Mooch.reset();
     }); // end it
     
+    it("should clear the stub list", function() {
+      Mooch.reset();
+      expect(Mooch.stub_list).toBeNull();
+    }); // end it
+    
   }); // end describe
   
   describe("stub_request", function() {
     
+    beforeEach(function() {
+      var stub_list_mock = new Mock(Mooch.StubList.prototype);
+    }); // end before
+    
     afterEach(function() {
       Mooch.reset();
     }); // end after
+    
+    it("should add an object to the stub list", function() {
+      Mooch.StubList.prototype.spies('add').passing('POST', '/hello_world');
+      Mooch.stub_request('POST', '/hello_world');
+    }); // end it
     
     it("should return the Mooch object", function() {
       expect(Mooch.stub_request()).toBeAnObject();
