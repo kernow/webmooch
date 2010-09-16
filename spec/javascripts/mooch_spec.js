@@ -2,15 +2,15 @@ describe("Mooch", function() {
   
   var original_xml_http_request = window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ? window.XMLHttpRequest : window.ActiveXObject;
   
-  afterEach(function() {
-    Mooch.reset();
-  }); // end afterEach
-  
   describe("init", function() {
     
     beforeEach(function() {
       Mooch.init();
-    }); // end beforeEach
+    }); // end before
+    
+    afterEach(function() {
+      Mooch.reset();
+    }); // end after
     
     it("should replace XMLHttpRequest with the Mooch version", function() {
       if(window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject)){
@@ -29,7 +29,7 @@ describe("Mooch", function() {
     
     beforeEach(function() {
       Mooch.init();
-    }); // end beforeEach
+    }); // end before
     
     it("should reset XMLHttpRequest to it's original state", function() {
       Mooch.reset();
@@ -51,6 +51,10 @@ describe("Mooch", function() {
   
   describe("stub_request", function() {
     
+    afterEach(function() {
+      Mooch.reset();
+    }); // end after
+    
     it("should return the Mooch object", function() {
       expect(Mooch.stub_request()).toBeAnObject();
     }); // end it
@@ -59,6 +63,10 @@ describe("Mooch", function() {
   
   describe("a remote", function() {
     
+    afterEach(function() {
+      Mooch.reset();
+    }); // end after
+    
     describe("post request", function() {
 
       var remote_data;
@@ -66,11 +74,11 @@ describe("Mooch", function() {
 
       beforeEach(function() {
         expected_data = "some text";
-      }); // end beforeEach
+      }); // end before
 
       afterEach(function() {
         remote_data = undefined;
-      }); // end afterEach
+      }); // end after
 
       it("should return the expected data", function() {
         Mooch.stub_request('POST', '/test/data.json').returns({ 'body': "some text", 'status': 200, 'headers': {} });
@@ -94,11 +102,11 @@ describe("Mooch", function() {
 
       beforeEach(function() {
         expected_data = "some text";
-      }); // end beforeEach
+      }); // end before
 
       afterEach(function() {
         remote_data = undefined;
-      }); // end beforeEach
+      }); // end before
 
       it("should return the expected data", function(me) {
         Mooch.stub_request('GET', '/test/data.json').returns({ 'body': "some text", 'status': 200, 'headers': {} });
@@ -122,11 +130,11 @@ describe("Mooch", function() {
       
       beforeEach(function() {
         expected_data = "some text";
-      }); // end beforeEach
+      }); // end before
 
       afterEach(function() {
         remote_data = undefined;
-      }); // end afterEach
+      }); // end after
       
       it("should remove jquery style no cache parameters", function(me) {
         Mooch.stub_request('GET', '/test/url').returns({ 'body': "some text", 'status': 200, 'headers': {} });
@@ -153,11 +161,11 @@ describe("Mooch", function() {
 
       beforeEach(function() {
         expected_data = {some: 'text'};
-      }); // end beforeEach
+      }); // end before
 
       afterEach(function() {
         remote_data = undefined;
-      }); // end afterEach
+      }); // end after
 
       it("should return the expected data", function(me) {
         var remote_data;
