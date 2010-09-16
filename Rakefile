@@ -1,4 +1,4 @@
-require 'Sprockets'
+require 'sprockets'
 
 namespace :js do
   task :combine do
@@ -27,3 +27,6 @@ namespace :js do
   desc "Combine and compress all javascript files into mooch.js and mooch-min.js"
   task :build => [:create_build_dir, :combine, :compress]
 end
+
+require 'jasmine'
+load 'jasmine/tasks/jasmine.rake'
