@@ -2,7 +2,7 @@ beforeEach(function() {
   this.addMatchers({
     toHaveNumberOfKeys: function(expected) {
       this.message = function() {
-        return 'expected ' + $.print(this.actual) +' to have ' + expected + ' key(s)';
+        return 'expected object to have ' + expected + ' key(s), but it has ' + keys(this.actual).length + ' key(s)';
       };
       return keys(this.actual).length == expected;
     }
