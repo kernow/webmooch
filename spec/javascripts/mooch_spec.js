@@ -1,4 +1,4 @@
-describe("Mooch", function() {
+describe("Mooch initializer", function() {
   
   var original_xml_http_request = window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ? window.XMLHttpRequest : window.ActiveXObject;
   
@@ -69,7 +69,7 @@ describe("Mooch", function() {
     }); // end after
     
     it("should add an object to the stub list", function() {
-      Mooch.StubList.prototype.spies('add').passing('POST', '/hello_world');
+      Mooch.StubList.prototype.expects('add').passing('POST', '/hello_world');
       Mooch.stub_request('POST', '/hello_world');
     }); // end it
     

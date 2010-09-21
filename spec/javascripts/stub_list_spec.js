@@ -1,4 +1,4 @@
-describe("Mooch.StubList", function() {
+describe("Mooch StubList", function() {
   
   var stub_list;
   
@@ -13,29 +13,29 @@ describe("Mooch.StubList", function() {
   describe("new", function() {
     
     it("should create an empty stub_list object", function() {
-      expect(stub_list.stubs).toEqual({});
+      expect(stub_list.items).toEqual({});
     }); // end it
     
   }); // end describe
   
-  
   describe("add", function() {
     
-    it("should add a object to the stubs object with the correct key", function() {
+    it("should add an stub to the list with the correct key", function() {
       stub_list.add('POST', '/some/url.json');
-      expect(stub_list.stubs['POST_/some/url.json']).toBeAnObject();
+      expect(stub_list.items['POST_/some/url.json']).toBeAnObject();
     }); // end it
     
-    it("should add a object to the stubs object with a complex key", function() {
+    it("should add an stub to the list with a complex key", function() {
       stub_list.add('POST', 'http://user:pass@domain.com:80/some/url.json?foo=bar+1&bar=foo');
-      expect(stub_list.stubs['POST_http://user:pass@domain.com:80/some/url.json?foo=bar+1&bar=foo']).toBeAnObject();
+      expect(stub_list.items['POST_http://user:pass@domain.com:80/some/url.json?foo=bar+1&bar=foo']).toBeAnObject();
     }); // end it
     
     it("should find a stub with the same key", function() {
       stub_list.add('POST', '/some/url.json');
-      expect(stub_list.stubs['POST_/some/url.json']).toBeAnObject();
+      expect(stub_list.items['POST_/some/url.json']).toBeAnObject();
+      expect(stub_list.items).toHaveNumberOfKeys(1);
       stub_list.add('POST', '/some/url.json');
-      expect(stub_list.stubs).toHaveNumberOfKeys(1);
+      expect(stub_list.items).toHaveNumberOfKeys(1);
     }); // end it
     
   }); // end describe
