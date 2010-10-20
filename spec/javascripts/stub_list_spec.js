@@ -40,4 +40,35 @@ describe("Mooch StubList", function() {
     
   }); // end describe
   
+  describe("find_or_create", function() {
+    
+    beforeEach(function() {
+      stub_list.add('POST', '/some/url.json');
+      stub_list.add('POST', '/some/other_url.json');
+    }); // end before
+    
+    it("should create a new stub if none existed with the same key", function() {
+      expect(stub_list.items).toHaveNumberOfKeys(2);
+      stub_list.find_or_create('POST', '/some/new_url.json');
+      expect(stub_list.items).toHaveNumberOfKeys(3);
+    }); // end it
+    
+    it("should find a stub if one already exists", function() {
+      expect(stub_list.items).toHaveNumberOfKeys(2);
+      stub_list.find_or_create('POST', '/some/url.json');
+      expect(stub_list.items).toHaveNumberOfKeys(2);
+    }); // end it
+    
+    it("should return the created object", function() {
+      expect(stub_list.find_or_create('POST', '/some/new_url.json')).toEqual({ stub: null, invocation_count: 0 });
+    }); // end it
+    
+    it("should return the existing object", function() {
+      var item = stub_list.find_or_create('POST', '/some/url.json');
+      expect(item.stub).toBeAnObject();
+      expect(item.invocation_count).toEqual(0);
+    }); // end it
+    
+  }); // end describe
+  
 }); // end describe
