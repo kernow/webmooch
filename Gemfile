@@ -1,5 +1,8 @@
-source 'http://rubygems.org'
+source :rubygems
 
 gem 'rake'
-gem 'sprockets'
+gem 'mongrel'
 gem 'jasmine'
+gem 'sprockets'
+
+gem 'jasmine-sauce'
