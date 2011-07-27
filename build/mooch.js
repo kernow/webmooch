@@ -121,8 +121,8 @@ Mooch.StubList.prototype = {
 	  return uri.replace(/_=\d+/, '').replace(/\?$/, '');
 	},
 	store_and_remove_jsonp_parameters: function(uri){
-	  var jsonp_matches = uri.match(/callback=(jsonp\d+)/);
-	  var obj = { uri: uri.replace(/callback=jsonp\d+/, 'callback=?').replace(/\&$/, '') };
+	  var jsonp_matches = uri.match(/callback=(jsonp\d+|jQuery\w+)/);
+	  var obj = { uri: uri.replace(/callback=(jsonp\d+|jQuery\w+)/, 'callback=?').replace(/\&$/, '') };
 	  if(jsonp_matches && jsonp_matches.length > 0){
 	    obj.jsonp_callback = jsonp_matches[1];
     }
