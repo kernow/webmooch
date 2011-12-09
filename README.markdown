@@ -19,18 +19,22 @@ Usage
 ### A simple stub with a default response
 
     Mooch.stub_request('GET', 'example.com/load_something.json');
-    
+
     $.ajax({ url: 'example.com/load_something.json' });
 
 ### Returning a custom body
 
     Mooch.stub_request('GET', 'www.example.com/load_something.json').
       returns({ body: '{ important_data: "this is important" }' });
-    
+
     $.ajax({
       url: 'example.com/load_something.json',
       success: function(data) {
         alert('the important data is: ' + data.important_data);
       }
     });
-    
+
+### Enable or disable logging (disabled by default)
+
+    Mooch.console.enable();
+    Mooch.console.disable();
