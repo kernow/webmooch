@@ -49,14 +49,25 @@ Mooch.stub_request = function(method, uri){
 
 
 Mooch.console = {
-  log: function(a){
-    if(typeof window.console != 'undefined'){
-      console.log(a);
+  is_enabled: false,
+  enable: function(){
+    this.is_enabled = true;
+  },
+  disable: function(){
+    this.is_enabled = false;
+  },
+  log: function(){
+    if(this.is_enabled && typeof window.console != 'undefined'){
+      var args = Array.prototype.slice.call(arguments,0);
+      args.unshift("Mooch:");
+      console.log.apply(console,args);
     }
   },
-  warn: function(a){
-    if(typeof window.console != 'undefined'){
-      console.log(a);
+  warn: function(){
+    if(this.is_enabled && typeof window.console != 'undefined'){
+      var args = Array.prototype.slice.call(arguments,0);
+      args.unshift("Mooch:");
+      console.warn.apply(console,args);
     }
   }
 };
@@ -130,19 +141,17 @@ Mooch.StubList.prototype = {
 	}
 };
 Mooch.XMLHttpRequest = function(){
-  Mooch.console.log("caught call to new");
+  Mooch.console.log("new caught", arguments);
   this.stub = null;
 };
 
 Mooch.XMLHttpRequest.prototype.open = function(){
-  Mooch.console.log("open caught with args");
-  Mooch.console.log(arguments);
+  Mooch.console.log("open caught", arguments);
   this.stub = Mooch.stub_list.find(arguments[0], arguments[1]);
 };
 
 Mooch.XMLHttpRequest.prototype.setRequestHeader = function(){
-  Mooch.console.log("setRequestHeader caught with arguments");
-  Mooch.console.log(arguments);
+  Mooch.console.log("setRequestHeader caught", arguments);
 };
 
 Mooch.XMLHttpRequest.prototype.abort = function(){
@@ -154,16 +163,14 @@ Mooch.XMLHttpRequest.prototype.getAllResponseHeaders = function(){
 };
 
 Mooch.XMLHttpRequest.prototype.getResponseHeader = function(){
-  Mooch.console.log("getResponseHeader caught with arguments");
-  Mooch.console.log(arguments);
+  Mooch.console.log("getResponseHeader caught", arguments);
 };
 
 Mooch.XMLHttpRequest.prototype.onreadystatechange = function(){
 };
 
 Mooch.XMLHttpRequest.prototype.send = function(){
-  Mooch.console.log("send caught with arguments");
-  Mooch.console.log(arguments);
+  Mooch.console.log("send caught", arguments);
 
   this.stub.invocation_count ++;
 
@@ -176,6 +183,6 @@ Mooch.XMLHttpRequest.prototype.send = function(){
 
   this.stub.stub.run_jsonp_callback();
 
-  Mooch.console.log("fireing jQuery callback");
+  Mooch.console.log("firing jQuery callback");
   this.onreadystatechange();
 };
