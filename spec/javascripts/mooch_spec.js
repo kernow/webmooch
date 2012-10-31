@@ -72,7 +72,14 @@ describe("Mooch initializer", function() {
       Mooch.StubList.prototype.expects('add').passing('POST', '/hello_world');
       Mooch.stub_request('POST', '/hello_world');
     }); // end it
-    
+
+    it("should allow multiple stubs", function(){
+      Mooch.stub_request('POST', '/hello_world');
+      Mooch.stub_request('POST', '/goodbye_world');
+
+      expect(Mooch.stub_list.items).toHaveNumberOfKeys(2);
+    });
+
     it("should return the Mooch object", function() {
       expect(Mooch.stub_request()).toBeAnObject();
     }); // end it
